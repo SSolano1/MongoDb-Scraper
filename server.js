@@ -11,7 +11,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 var app = express();
 
 // Configure middleware
@@ -20,6 +20,11 @@ app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";if (process.env.MONGODB_URI) {
+
+  mongoose.Promise = Promise;
+  mongoose.connect(MONGODB_URI);
+};
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/nyArticles", { useNewUrlParser: true });
 
