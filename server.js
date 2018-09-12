@@ -50,7 +50,7 @@ app.get("/scrape", function(req, res) {
 });
 
 app.get("/articles", function(req, res) {
-    console.log("server.js/articles");
+
   db.Article.find({})
     .then(function(dbArticle) {
       res.json(dbArticle);
@@ -60,10 +60,40 @@ app.get("/articles", function(req, res) {
     })
 });
 
+app.get('/api/saved', function (req, res) {
+    db.Article.find({
+      saved: true
+    }).then(function (dbArticle) {
+      res.json(dbArticle);
+    }).catch(function (err) {
+      res.json(err);
+    });
+  });
+  
+  app.get("/saved/:id", function (req, res) {
+    db.Article.findOne({ _id: req.params.id })
+      .populate("note")
+      .then(function (dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function (err) {
+        res.json(err);
+      });
+  });
+  
+  app.get('/api/saved/:id', function (req, res) {
+    db.Article.findOne({ _id: req.params.id })
+      .then(function (dbArticle) {
+        return;
+      }).catch(function (err) {
+        res.json(err);
+      });
+  })
+
 app.get('/delete/:id', function (req, res) {
     db.Article.remove({ _id: req.params.id })
       .then( function() {
-      })
+         })
       .then(function (dbArticle) {
         res.render("index.html")
       }).catch(function (err) {
@@ -107,6 +137,16 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+app.get('/save/:id', function (req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: true }, { new: true }, function () {
+    })
+      .then(function (dbArticle) {
+        res.render("index.html")
+      }).catch(function (err) {
+        res.json(err);
+      });
+  });
 
 // Start the server
 app.listen(PORT, function() {
