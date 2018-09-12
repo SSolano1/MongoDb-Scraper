@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/week18Populater", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/nyArticles", { useNewUrlParser: true });
 
 // Routes
 
@@ -32,7 +32,7 @@ app.get("/scrape", function(req, res) {
     var $ = cheerio.load(response.data);
     $("h2").each(function(i, element) {
         var result = {};
-t
+
       result.title = $(this).text();
       result.link = "https://www.nytimes.com" + $(this).parent().parent().attr("href");
     
@@ -50,14 +50,14 @@ t
 });
 
 app.get("/articles", function(req, res) {
-
+    console.log("server.js/articles");
   db.Article.find({})
     .then(function(dbArticle) {
       res.json(dbArticle);
     })
     .catch(function(err) {
       res.json(err);
-    });
+    })
 });
 
 app.get("/articles/:id", function(req, res) {
@@ -91,4 +91,4 @@ app.post("/articles/:id", function(req, res) {
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
-});  n
+});  
