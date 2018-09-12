@@ -60,6 +60,17 @@ app.get("/articles", function(req, res) {
     })
 });
 
+app.get('/delete/:id', function (req, res) {
+    db.Article.remove({ _id: req.params.id })
+      .then( function() {
+      })
+      .then(function (dbArticle) {
+        res.render("index.html")
+      }).catch(function (err) {
+        res.json(err);
+      });
+  })
+
 app.get("/articles/:id", function(req, res) {
  
   db.Article.findOne({ _id: req.params.id })
@@ -71,6 +82,15 @@ app.get("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+app.get('/deletenote/:id', function (req, res) {
+    db.Note.deleteOne({ _id: req.params.id })
+      .then(function (dbNote) {
+        res.render("index.html")
+      }).catch(function (err) {
+        res.json(err);
+      });
+  })
 
 
 app.post("/articles/:id", function(req, res) {

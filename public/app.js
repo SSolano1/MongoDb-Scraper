@@ -3,10 +3,13 @@ $.getJSON("/articles", function(data) {
     // For each one
     console.log("apps.js/articles");
     for (var i = 0; i < data.length; i++) {
-      // Display the apropos information on the page
+    
       $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+
+      $("#articles").append("<a href='/delete/" + data[i]._id + " 'data-id='" + data[i]._id + "' id='deletearticle'>Delete Article</a>");
     }
-  });
+    
+    });
   
   
   // Whenever someone clicks a p tag
@@ -32,6 +35,9 @@ $.getJSON("/articles", function(data) {
         $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
         // A button to submit a new note, with the id of the article saved to it
         $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+        // A button to submit a new note, with the id of the article saved to it
+        $("#notes").append("<button data-id='" + data.note._id + "' id='deletenote'>Delete Note</button>");
+
   
         // If there's a note in the article
         if (data.note) {
@@ -61,6 +67,28 @@ $.getJSON("/articles", function(data) {
     })
       // With that done
       .then(function(data) {
+        // Log the response
+        console.log(data);
+        // Empty the notes section
+        $("#notes").empty();
+      });
+  
+    // Also, remove the values entered in the input and textarea for note entry
+    $("#titleinput").val("");
+    $("#bodyinput").val("");
+  });
+
+  $(document).on("click", "#deletenote", function () {
+    // Grab the id associated with the article from the submit button
+    var thisId = $(this).attr("data-id");
+  
+    // Run a get request to change the note, using what's entered in the inputs
+    $.ajax({
+      method: "GET",
+      url: "/deletenote/" + thisId,
+    })
+      // With that done
+      .then(function (data) {
         // Log the response
         console.log(data);
         // Empty the notes section
